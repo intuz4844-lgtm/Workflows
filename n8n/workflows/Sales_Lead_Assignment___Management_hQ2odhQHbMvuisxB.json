@@ -153,12 +153,7 @@
       "id": "311b8fe2-64f4-446f-adf1-d81146a9393a",
       "name": "Send Message in Slack Channel",
       "webhookId": "1c90d7f5-0592-4e19-b4cc-9a4e8b5baf0a",
-      "credentials": {
-        "slackApi": {
-          "id": "ASwwSjm4vc3kKDYq",
-          "name": "Slack account"
-        }
-      }
+      "credentials": {}
     },
     {
       "parameters": {

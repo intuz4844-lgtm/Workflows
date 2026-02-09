@@ -803,7 +803,12 @@
       ],
       "id": "5dee6893-5c63-4504-82e8-2401cfc7acac",
       "name": "Add Rows - GCP Subreddit",
-      "credentials": {}
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "4AOyTwCgFWDhljl6",
+          "name": "Google Sheets account 3"
+        }
+      }
     },
     {
       "parameters": {
@@ -832,7 +837,12 @@
       "id": "58d45088-667a-448c-a505-a8854aa4d03c",
       "name": "Get Rows - GCP Subreddit",
       "alwaysOutputData": true,
-      "credentials": {}
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "4AOyTwCgFWDhljl6",
+          "name": "Google Sheets account 3"
+        }
+      }
     },
     {
       "parameters": {
@@ -860,7 +870,12 @@
       ],
       "id": "a66dc07b-695a-4941-b4a2-fe6e7c3c7ec2",
       "name": "Get Rows - GCP Subreddit1",
-      "credentials": {}
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "4AOyTwCgFWDhljl6",
+          "name": "Google Sheets account 3"
+        }
+      }
     },
     {
       "parameters": {
@@ -973,7 +988,12 @@
       ],
       "id": "c0e9e5a5-c2f9-4ffb-969d-90ee8d1c9dae",
       "name": "Update To Do - GCP Subreddit",
-      "credentials": {}
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "4AOyTwCgFWDhljl6",
+          "name": "Google Sheets account 3"
+        }
+      }
     },
     {
       "parameters": {
@@ -1082,7 +1102,12 @@
       ],
       "id": "97ae92e4-7c77-4b50-b97c-6005ee769676",
       "name": "Add rows - AZURE Subreddit",
-      "credentials": {}
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "4AOyTwCgFWDhljl6",
+          "name": "Google Sheets account 3"
+        }
+      }
     },
     {
       "parameters": {
@@ -1110,7 +1135,12 @@
       ],
       "id": "c943ec74-20d1-4381-8ae8-0242aab5588c",
       "name": "Get Rows - AZURE Subreddit1",
-      "credentials": {}
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "4AOyTwCgFWDhljl6",
+          "name": "Google Sheets account 3"
+        }
+      }
     },
     {
       "parameters": {
@@ -1222,7 +1252,12 @@
       ],
       "id": "66ab2aaf-ecd6-4cd4-a70c-d9831c05081a",
       "name": "Update TO Do - AZURE Subreddit",
-      "credentials": {}
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "4AOyTwCgFWDhljl6",
+          "name": "Google Sheets account 3"
+        }
+      }
     },
     {
       "parameters": {
@@ -1331,7 +1366,12 @@
       ],
       "id": "700ca2a4-8070-4430-9bf4-b3d41697597d",
       "name": "Add rows - DevOps Subreddit1",
-      "credentials": {}
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "4AOyTwCgFWDhljl6",
+          "name": "Google Sheets account 3"
+        }
+      }
     },
     {
       "parameters": {
@@ -1360,7 +1400,12 @@
       "id": "32e235fe-49be-4abc-acff-6c6220e5b5ce",
       "name": "Get Rows - DevOps Subreddit2",
       "alwaysOutputData": true,
-      "credentials": {}
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "4AOyTwCgFWDhljl6",
+          "name": "Google Sheets account 3"
+        }
+      }
     },
     {
       "parameters": {
@@ -1388,7 +1433,12 @@
       ],
       "id": "e3240cd5-0814-4a4c-8ed6-348fdcdb6139",
       "name": "Get Rows - DevOps Subreddit3",
-      "credentials": {}
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "4AOyTwCgFWDhljl6",
+          "name": "Google Sheets account 3"
+        }
+      }
     },
     {
       "parameters": {
@@ -1501,7 +1551,12 @@
       ],
       "id": "d88e1009-0e9b-4fbc-a2bb-6ddebd0914bb",
       "name": "Update TO Do - DevOps Subreddit1",
-      "credentials": {}
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "4AOyTwCgFWDhljl6",
+          "name": "Google Sheets account 3"
+        }
+      }
     },
     {
       "parameters": {
@@ -1546,7 +1601,12 @@
       "id": "a9ad3acc-70bf-496e-8302-bad191f53fba",
       "name": "Get Rows - Azure Subreddit",
       "alwaysOutputData": true,
-      "credentials": {}
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "4AOyTwCgFWDhljl6",
+          "name": "Google Sheets account 3"
+        }
+      }
     },
     {
       "parameters": {

@@ -1,0 +1,533 @@
+{
+  "updatedAt": "2026-02-09T10:29:26.959Z",
+  "createdAt": "2026-02-05T05:39:39.515Z",
+  "id": "vShQSYZM5GKCBEm1",
+  "name": "Daily Workflow Backups to GitHub",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## Trigger Every 24 Hour\n\n- Starts the workflow automatically once per day.\n- You can change the interval to hourly, weekly, or custom cron timing.\n",
+        "height": 368,
+        "width": 384,
+        "color": 2
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -512,
+        96
+      ],
+      "typeVersion": 1,
+      "id": "3d7d5d5d-4316-47a5-b86d-232e6177469c",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -368,
+        288
+      ],
+      "id": "911058de-c366-499f-b022-d74fd3fd4a68",
+      "name": "Trigger Every 24 Hour"
+    },
+    {
+      "parameters": {
+        "filters": {},
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-base.n8n",
+      "typeVersion": 1,
+      "position": [
+        144,
+        288
+      ],
+      "id": "8a5b15c1-9432-4cea-a468-2fa4192943b8",
+      "name": "Get Workflows List",
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        720,
+        288
+      ],
+      "id": "e6297edc-0cf7-4015-b7b3-c344fbb74c3c",
+      "name": "Loop Over Workflow List"
+    },
+    {
+      "parameters": {
+        "jsCode": "const wf = { ...$json };\n\n// Remove credentials safely\nif (wf.nodes) {\n  wf.nodes = wf.nodes.map(n => {\n    if (n.credentials) {\n      n.credentials = {};\n    }\n    return n;\n  });\n}\n\n// Remove top-level credentials if present\ndelete wf.credentials;\n\nreturn [{\n  json: wf\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1312,
+        304
+      ],
+      "id": "69f15f58-557f-4d63-934a-abb972b85920",
+      "name": "Remove Credentials"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "resource": "file",
+        "operation": "get",
+        "owner": {
+          "__rl": true,
+          "mode": "name",
+          "value": "={{ $json.github_owner }}"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "={{ $json.github_repo }}",
+          "mode": "name"
+        },
+        "filePath": "={{ $json.repo_path }}/{{ $json.fileName }}",
+        "asBinaryProperty": false,
+        "additionalParameters": {}
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        1904,
+        304
+      ],
+      "id": "38594002-778d-42a6-89c6-1682c4997778",
+      "name": "Get file Data",
+      "webhookId": "5c6f27af-6aab-4e2b-9340-ff725c52e442",
+      "alwaysOutputData": true,
+      "credentials": {},
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "ab122b6d-a394-4801-bb03-9df4b4451a37",
+              "leftValue": "={{ $json.sha }}",
+              "rightValue": "={{ $('Configs & Data').item.json.fileName }}",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        2128,
+        304
+      ],
+      "id": "c7bc328d-4519-467f-83e5-cd55e7e021a9",
+      "name": "Is New File?"
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "edit",
+        "owner": {
+          "__rl": true,
+          "mode": "name",
+          "value": "={{ $('Configs & Data').item.json.github_owner }}"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "={{ $('Configs & Data').item.json.github_repo }}",
+          "mode": "name"
+        },
+        "filePath": "={{ $node[\"Configs & Data\"].json[\"repo_path\"] }}/{{ $('Configs & Data').item.json.fileName }}",
+        "fileContent": "={{ $('Configs & Data').item.json.content }}",
+        "commitMessage": "=Backup workflow {{ $('Loop Over Workflow List').item.json.name }}"
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        2352,
+        368
+      ],
+      "id": "6a8a79aa-325f-45aa-b4e8-d2c76689f1ff",
+      "name": "Edit Existing File",
+      "webhookId": "03c168f5-58b5-4ee9-aa86-c258811a1acd",
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "owner": {
+          "__rl": true,
+          "value": "={{ $('Configs & Data').first().json.github_owner }}",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "={{ $('Configs & Data').first().json.github_repo }}",
+          "mode": "name"
+        },
+        "filePath": "={{ $('Configs & Data').first().json.repo_path }}/{{ $('Configs & Data').first().json.fileName }}",
+        "fileContent": "={{ $('Configs & Data').first().json.content }}",
+        "commitMessage": "=Backup workflow {{ $('Configs & Data').first().json.name }}"
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        2352,
+        576
+      ],
+      "id": "7e468183-28d3-4bd8-8a57-a1e64ac4456c",
+      "name": "Create New File",
+      "webhookId": "03c168f5-58b5-4ee9-aa86-c258811a1acd",
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C0A823BDX0S",
+          "mode": "list",
+          "cachedResultName": "internal"
+        },
+        "text": "All workflows backed up successfully ✅",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.4,
+      "position": [
+        1456,
+        -256
+      ],
+      "id": "709aca59-40db-4fd3-aedd-f9d8f95d77c7",
+      "name": "Send Success Message",
+      "webhookId": "501a164f-8b3b-4cab-9c5d-67a83fba427a",
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "content": "## Get Workflows List \n- Uses the n8n API to retrieve all workflows from the instance.\n- Each workflow becomes one item for processing in the loop.\n",
+        "height": 352,
+        "width": 368,
+        "color": 2
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        0,
+        96
+      ],
+      "typeVersion": 1,
+      "id": "59babb4a-113a-40c0-96c1-9158849c3d14",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## Loop\n- Processes each workflow one by one.\n- Prevents memory overload and ensures stable execution for large numbers of workflows.",
+        "height": 352,
+        "width": 608,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        480,
+        96
+      ],
+      "typeVersion": 1,
+      "id": "c5c7ceb6-5ad7-48ef-af3f-7e85fdc8e9c4",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "## Daily Workflow Backups to GitHub with Slack Notifications \n\n### How it works\nThis workflow automatically backs up all n8n workflows to a GitHub repository every 24 hours. It starts with a scheduled trigger that fetches the complete list of workflows from your n8n instance. Each workflow is processed one by one using a loop to avoid memory issues.\n\nBefore saving, a Code node removes credentials and sensitive data from the workflow JSON to prevent GitHub push protection from blocking commits. The cleaned workflow data is then prepared into a filename and content format.\n\nThe workflow checks if a backup file already exists in GitHub. If it exists, it updates the file. If not, it creates a new file. This ensures all workflows stay versioned and up to date automatically. A Slack message is sent to confirm successful completion.\n\n### Setup steps\n1. Connect your n8n API credential in the “Get Workflows List” node.\n2. In the Configs node, set:\n   - github_owner\n   - github_repo\n   - repo_path (example: n8n/workflows)\n3. Connect your GitHub credential to Create/Edit/Get file nodes.\n4. Connect Slack credentials and select a channel for success notifications.\n5. Activate the workflow to run automatic daily backups.\n",
+        "height": 560,
+        "width": 784
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -512,
+        -704
+      ],
+      "typeVersion": 1,
+      "id": "9a895fc8-3b38-4881-8470-9edd9cf3ebfa",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "## Remove Credentials\n- Removes credentials and secrets from workflow JSON before saving.\n- Prevents GitHub push protection from blocking commits.\n",
+        "height": 368,
+        "width": 528,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1200,
+        96
+      ],
+      "typeVersion": 1,
+      "id": "f38ba822-242d-47c8-98c4-590464218aa1",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "content": "## Back up Data\n- Checks if the workflow backup file already exists in GitHub.\n- Used to decide between update vs create.\n- If file exists → Updates existing workflow JSON in GitHub while keeping commit history.\n- If file missing → Creates a new JSON file when no backup exists yet.\n\n",
+        "height": 880,
+        "width": 928,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1872,
+        -80
+      ],
+      "typeVersion": 1,
+      "id": "e060a65e-9191-4045-a3e8-d481788e9b87",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "de1e084c-01a8-47c8-975c-803de2fa262f",
+              "name": "fileName",
+              "value": "={{ $json.name.replace(/[^a-z0-9]/gi,'_') }}_{{$json.id}}.json",
+              "type": "string"
+            },
+            {
+              "id": "51666421-c663-4219-9572-fcadc9d6e898",
+              "name": "content",
+              "value": "={{ JSON.stringify($json, null, 2) }}",
+              "type": "string"
+            },
+            {
+              "id": "d4ba1bff-e9bd-4ddb-9fd5-006347dbdc15",
+              "name": "name",
+              "value": "={{ $json.name }}",
+              "type": "string"
+            },
+            {
+              "id": "6036c064-0b91-4d15-9748-799c676b031f",
+              "name": "github_owner",
+              "value": "intuz4844-lgtm",
+              "type": "string"
+            },
+            {
+              "id": "b73a5e69-cdc7-451a-8aba-a02832fa132f",
+              "name": "github_repo",
+              "value": "Workflows",
+              "type": "string"
+            },
+            {
+              "id": "be036af8-d08f-4e81-91e5-61aac77e136f",
+              "name": "repo_path",
+              "value": "n8n/workflows",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1536,
+        304
+      ],
+      "id": "8f1774c3-1b73-49ff-9023-1bc2cdc73235",
+      "name": "Configs & Data"
+    },
+    {
+      "parameters": {
+        "content": "## Configs & Data Node \nSet inside Configs node:\n* github_owner → Your GitHub username/org\n* github_repo → Repo name\n* repo_path → Folder path",
+        "height": 144,
+        "width": 368,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1424,
+        576
+      ],
+      "typeVersion": 1,
+      "id": "82eb8dda-b4ff-41ed-80dd-529add766a51",
+      "name": "Sticky Note6"
+    }
+  ],
+  "connections": {
+    "Execute Workflow1": {
+      "main": [
+        [
+          {
+            "node": "Configs & Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Trigger Every 24 Hour": {
+      "main": [
+        [
+          {
+            "node": "Get Workflows List",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Workflows List": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Workflow List",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Workflow List": {
+      "main": [
+        [
+          {
+            "node": "Send Success Message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Remove Credentials",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Remove Credentials": {
+      "main": [
+        [
+          {
+            "node": "Configs & Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get file Data": {
+      "main": [
+        [
+          {
+            "node": "Is New File?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is New File?": {
+      "main": [
+        [
+          {
+            "node": "Edit Existing File",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Create New File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Existing File": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Workflow List",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create New File": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Workflow List",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Configs & Data": {
+      "main": [
+        [
+          {
+            "node": "Get file Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "a6c4158d-a513-424e-8a71-6f39b768bec1",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-02-05T05:39:39.515Z",
+      "createdAt": "2026-02-05T05:39:39.515Z",
+      "role": "workflow:owner",
+      "workflowId": "vShQSYZM5GKCBEm1",
+      "projectId": "Bp7b9VxwF2dQ527l"
+    }
+  ],
+  "activeVersion": null,
+  "tags": [
+    {
+      "updatedAt": "2026-01-08T11:00:14.948Z",
+      "createdAt": "2026-01-08T11:00:14.948Z",
+      "id": "SDgn1UJUDZyNkQFc",
+      "name": "Cloud"
+    }
+  ]
+}

@@ -1,0 +1,229 @@
+{
+  "updatedAt": "2026-01-19T07:22:37.977Z",
+  "createdAt": "2026-01-13T06:48:05.193Z",
+  "id": "hQ2odhQHbMvuisxB",
+  "name": "Sales Lead Assignment & Management",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## Sales Lead Assignment & Management\n\n### How it works\n- This workflow automatically handles new sales leads submitted through a Google Form.\n- When a form is submitted, the webhook instantly captures the lead data and triggers the workflow.\n- The submitted form responses include key details such as name, email, company, industry, country/region, budget, and timeline.\n- The lead data is passed to the assignment logic, where the lead is automatically assigned to a sales representative based on predefined territory and industry rules.\n- If no direct match is found, the workflow applies a fallback or round-robin logic to ensure the lead is always assigned.\n- Once the lead is assigned, a formatted notification is sent to a designated Slack channel so the sales team is informed immediately.\n- A follow-up reminder is then created in Slack for the assigned sales representative to ensure timely action on the lead.\n\n\n### Setup steps\n- Connect the Google Form (or form integration) to the webhook URL and ensure submissions are sent using a POST request.\n- Submit a test form response to confirm all required fields appear correctly in the webhook body.\n- Review and update the sales user list, territories, industries, and Slack user IDs in the lead assignment code node.\n- Set the correct Slack channel in the Slack message node where lead notifications should be posted.\n- Ensure the Slack app is added to the target channel to allow messages to be delivered.\n- Configure the Slack reminder node with a valid user token and adjust the reminder timing as needed.\n- Activate the workflow after successful testing to start processing live leads.",
+        "height": 512,
+        "width": 928
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -2048,
+        -736
+      ],
+      "typeVersion": 1,
+      "id": "8bf831f0-6f64-4e13-a579-b4bcd47ab683",
+      "name": "Sticky Note6"
+    },
+    {
+      "parameters": {
+        "content": "## Code Node (Assign Lead to User):\n\n- Assigns the lead to a sales representative automatically\n- Matches lead country and industry with predefined sales users\n- Uses territory-only matching if industry matching fails\n- Uses round-robin assignment as a fallback\n- Needs updates when sales users or territories change",
+        "height": 416,
+        "width": 448,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        48,
+        -112
+      ],
+      "typeVersion": 1,
+      "id": "1973b578-5a3d-4d97-8ae4-acdadcd3c901",
+      "name": "Sticky Note7"
+    },
+    {
+      "parameters": {
+        "content": "## Slack Node:\n\n- Sends a lead notification message to a Slack channel\n- Includes lead details and assigned sales representative\n- Makes the new lead visible to the sales team immediately\n- Change the channel name here if you want to send messages to a different Slack channel.\n- The Slack app must be added to the channel to allow message delivery.",
+        "height": 416,
+        "width": 464,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        816,
+        -112
+      ],
+      "typeVersion": 1,
+      "id": "676cff36-dfe6-48ff-bdfd-1b80f2d2edb1",
+      "name": "Sticky Note8"
+    },
+    {
+      "parameters": {
+        "content": "## Https Node: \n\n- Creates a follow-up reminder for the assigned sales representative\n- Uses Slack’s reminders API\n- Requires a user token (xoxp) instead of a bot token\n- Sets the reminder time of 4 hour using a UNIX timestamp\n- Helps ensure timely follow-up on leads",
+        "height": 416,
+        "width": 464,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1600,
+        -112
+      ],
+      "typeVersion": 1,
+      "id": "d482752c-d48b-403a-9ae2-ee32338ea185",
+      "name": "Sticky Note9"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "google-form-leads-generation",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -576,
+        128
+      ],
+      "id": "7e49b39a-b62b-42a9-8cbb-38607aa47ebc",
+      "name": "Capture Form Submission Event",
+      "webhookId": "6b65dce6-d16d-4699-8237-859dd924add5"
+    },
+    {
+      "parameters": {
+        "content": "## Webhook:\n\n- Receives lead data when a Google Form is submitted\n- Triggers the workflow instantly on each submission\n- Captures all form responses (name, email, company, industry, country, etc.)\n- Passes the lead data to the next node for automatic assignment",
+        "height": 416,
+        "width": 480
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -752,
+        -112
+      ],
+      "typeVersion": 1,
+      "id": "21467ba4-f51f-48e4-b0df-190dc51f1877",
+      "name": "Sticky Note10"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://slack.com/api/reminders.add",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer xoxp-10223640331687-10232701250563-10307379330838-2a0af7e11bde9a2934c7c1aa12012c82"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/x-www-form-urlencoded"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"text\": \"Follow up with {{ $('Assign Lead to User').item.json['What is your Name?'] }} from {{ $('Assign Lead to User').item.json['Company Name'] }}\",\n  \"time\": \"{{ Math.floor((Date.now() + 4 * 60 * 60 * 1000) / 1000) }}\",\n  \"user\": \"{{ $('Assign Lead to User').item.json.assignedRepSlackId }}\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1792,
+        128
+      ],
+      "id": "65ced30d-55d6-4424-ada5-2db1fbfa903a",
+      "name": "Set Reminder in Slack"
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "#sales-leads",
+          "mode": "name"
+        },
+        "text": "=📩 *New Sales Lead*\n\n*Company:* {{ $json['Company Name'] }}\n*Name:* {{ $json['What is your Name?'] }}\n*Role:* {{ $json['Job Title / Role'] }}\n*Industry:* {{ $json.Industry }}\n\n📧 <mailto:{{ $json['Contact Email Address'] }}>\n📞 {{ $json['Company Phone Number'] }}\n\n*Budget:* ₹{{ $json.Budget }}\n*Timeline:* {{ $json.Timeline }}\nSubmitted: {{ $json.Timestamp }}\n\n📝 *Requirement:*\n\n```{{ $json.Requirement }}```\n\n\n\n👤 *Lead Assigned*\n\n{{ $json.assignedRepName }} - <@{{ $json.assignedRepSlackId }}>\nYou’ve been assigned a new lead from *{{ $json['Company Name'] }}*\n",
+        "otherOptions": {
+          "includeLinkToWorkflow": false
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.4,
+      "position": [
+        1008,
+        128
+      ],
+      "id": "311b8fe2-64f4-446f-adf1-d81146a9393a",
+      "name": "Send Message in Slack Channel",
+      "webhookId": "1c90d7f5-0592-4e19-b4cc-9a4e8b5baf0a",
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1️⃣ Get lead data\nconst lead = $input.first().json.body;\n\n// 2️⃣ Static sales users list\nconst salesUsers = [\n  {\n    name: \"Rahul\",\n    slackId: \"U01RAHUL\",\n    territories: [\"India\", \"Asia\"],\n    industries: [\"Food & Beverages\", \"Retail\"],\n    available: true\n  },\n  {\n    name: \"John\",\n    slackId: \"U02JOHN\",\n    territories: [\"US\", \"Canada\"],\n    industries: [\"SaaS\", \"Technology\"],\n    available: true\n  },\n  {\n    name: \"Emma\",\n    slackId: \"U03EMMA\",\n    territories: [\"UK\", \"Europe\"],\n    industries: [], // fallback for Europe\n    available: true\n  }\n];\n\n// 3️⃣ Helpers\nconst normalize = (v) =>\n  (v || \"\")\n    .toString()\n    .toLowerCase()\n    .replace(/[^a-z ]/g, \"\")\n    .trim();\n\nconst leadCountry = normalize(lead[\"Country/Region\"]);\nconst leadIndustry = normalize(lead[\"Industry\"]);\n\n// 4️⃣ Filter available users\nconst availableUsers = salesUsers.filter(u => u.available !== false);\n\nlet assigned = null;\n\n// ✅ 1. Territory + Industry match\nassigned = availableUsers.find(user =>\n  user.territories.some(t =>\n    leadCountry.includes(normalize(t))\n  ) &&\n  (\n    user.industries.length === 0 ||\n    user.industries.some(i =>\n      leadIndustry.includes(normalize(i))\n    )\n  )\n);\n\n// ✅ 2. Territory-only match\nif (!assigned) {\n  assigned = availableUsers.find(user =>\n    user.territories.some(t =>\n      leadCountry.includes(normalize(t))\n    )\n  );\n}\n\n// ✅ 3. Round-robin fallback\nif (!assigned && availableUsers.length > 0) {\n  const data = $getWorkflowStaticData(\"global\");\n  data.index = data.index ?? 0;\n\n  assigned = availableUsers[data.index % availableUsers.length];\n  data.index++;\n}\n\n// ❌ Safety check\nif (!assigned) {\n  throw new Error(\"No sales user could be assigned\");\n}\n\n// 5️⃣ Output\nreturn [\n  {\n    json: {\n      ...lead,\n      assignedRepName: assigned.name,\n      assignedRepSlackId: assigned.slackId,\n      assignmentReason: assigned.industries.length\n        ? \"Territory + Industry match\"\n        : \"Territory / Round-robin fallback\"\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        240,
+        128
+      ],
+      "id": "ef7d225d-423e-47d0-a87b-334ee69d3c33",
+      "name": "Assign Lead to User"
+    }
+  ],
+  "connections": {
+    "Capture Form Submission Event": {
+      "main": [
+        [
+          {
+            "node": "Assign Lead to User",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Message in Slack Channel": {
+      "main": [
+        [
+          {
+            "node": "Set Reminder in Slack",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Assign Lead to User": {
+      "main": [
+        [
+          {
+            "node": "Send Message in Slack Channel",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "7ac3d56e-d2fe-437b-bc1c-e772da5dcf91",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-01-13T06:48:05.193Z",
+      "createdAt": "2026-01-13T06:48:05.193Z",
+      "role": "workflow:owner",
+      "workflowId": "hQ2odhQHbMvuisxB",
+      "projectId": "Bp7b9VxwF2dQ527l"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}

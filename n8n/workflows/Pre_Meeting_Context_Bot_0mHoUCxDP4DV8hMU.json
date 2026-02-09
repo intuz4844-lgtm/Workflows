@@ -1,0 +1,884 @@
+{
+  "updatedAt": "2026-01-21T07:05:39.279Z",
+  "createdAt": "2026-01-19T09:35:12.989Z",
+  "id": "0mHoUCxDP4DV8hMU",
+  "name": "Pre-Meeting Context Bot",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\n\n\nreturn {\n  eventStart: new Date($input.first().json.start?.date || $input.first().json.start.dateTime),\n  summary: $input.first().json.summary,\n  attendees: $input.first().json.attendees\n};\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -32,
+        -16
+      ],
+      "id": "1af00621-8093-41a5-8abd-c86ac5793f58",
+      "name": "Format Calenda Event Payload"
+    },
+    {
+      "parameters": {
+        "jsCode": "const start = new Date($input.first().json.eventStart);\nconst notifyAt = new Date(start.getTime() - 15 * 60 * 1000);\n\nreturn {\n  ...$input.first().json,\n  notifyAt\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1216,
+        -16
+      ],
+      "id": "70086689-cb3a-4267-8bfb-a503130ecc6f",
+      "name": "Add 15 minute Early Time"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// --------------------\n// 1. Read inputs safely\n// --------------------\nconst ticketsRaw = $json.tickets ?? [];\n\nconst previousNotes =\n  $('Normalize Calendar and Notion Payloads').first()?.json?.previousMeetingNotes ?? '';\n\nconst meetingTitle =\n  $('Format Calenda Event Payload').first()?.json?.summary ?? 'Meeting';\n\nconst eventStart =\n  $('Format Calenda Event Payload').first()?.json?.eventStart;\n\nconst start = eventStart ? new Date(eventStart) : null;\n\n// --------------------\n// 2. Format meeting time\n// --------------------\nconst meetingTime = start\n  ? start.toLocaleString('en-IN', {\n      weekday: 'short',\n      day: '2-digit',\n      month: 'short',\n      hour: '2-digit',\n      minute: '2-digit'\n    })\n  : '';\n\n// --------------------\n// 3. Clean & validate tickets\n// --------------------\nconst validTickets = ticketsRaw.filter(\n  t => t && t.source && t.id && t.title\n);\n\n// --------------------\n// 4. Build Topics section\n// --------------------\nconst ticketText = validTickets.length\n  ? validTickets\n      .map(t => `• *[${t.source}]* ${t.id} — ${t.title}`)\n      .join('\\n')\n  : '_No tickets or PRs found._';\n\n// --------------------\n// 5. Build Previous Notes section\n// --------------------\nconst notesText = previousNotes.trim()\n  ? previousNotes\n      .split('\\n')\n      .map(l => `• ${l.replace(/^[-•]\\s*/, '')}`)\n      .join('\\n')\n  : '_No previous meeting notes found._';\n\n// --------------------\n// 6. Return Slack Blocks\n// --------------------\nreturn {\n  blocks: [\n    {\n      type: 'header',\n      text: {\n        type: 'plain_text',\n        text: '🧠 Pre-Meeting Context',\n        emoji: true\n      }\n    },\n    {\n      type: 'context',\n      elements: [\n        {\n          type: 'mrkdwn',\n          text: `📅 *${meetingTitle}*${meetingTime ? ` · *${meetingTime}*` : ''}`\n        }\n      ]\n    },\n    { type: 'divider' },\n    {\n      type: 'section',\n      text: {\n        type: 'mrkdwn',\n        text: `*Topics for Today*\\n${ticketText}`\n      }\n    },\n    { type: 'divider' },\n    {\n      type: 'section',\n      text: {\n        type: 'mrkdwn',\n        text: `*Previous Meeting Summary*\\n${notesText}`\n      }\n    },\n    {\n      type: 'context',\n      elements: [\n        {\n          type: 'mrkdwn',\n          text: '_Please review before the meeting starts._'\n        }\n      ]\n    }\n  ]\n};\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3696,
+        -32
+      ],
+      "id": "52bb6001-eb8a-4c06-a9ef-2e4ed470b0e5",
+      "name": "Build Message for Slack"
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "calendarId": {
+          "__rl": true,
+          "value": "intuz4844@gmail.com",
+          "mode": "list",
+          "cachedResultName": "intuz4844@gmail.com"
+        },
+        "triggerOn": "eventCreated",
+        "options": {
+          "matchTerm": ""
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendarTrigger",
+      "typeVersion": 1,
+      "position": [
+        -256,
+        -16
+      ],
+      "id": "0c8a3201-4f13-451f-aee7-8a0715a491d4",
+      "name": "Capture New Google Calendar Event",
+      "alwaysOutputData": false,
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "getAll",
+        "databaseId": {
+          "__rl": true,
+          "value": "2ee96c4b-07ff-809a-a90b-f69aafee1bd5",
+          "mode": "list",
+          "cachedResultName": "Meeting Notes",
+          "cachedResultUrl": "https://www.notion.so/2ee96c4b07ff809aa90bf69aafee1bd5"
+        },
+        "limit": 1,
+        "simple": false,
+        "options": {
+          "sort": {
+            "sortValue": [
+              {
+                "key": "Meeting Date|date",
+                "direction": "descending"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        352,
+        -16
+      ],
+      "id": "d9d65695-2382-4d16-aa26-2cb332fb6ef6",
+      "name": "Get Last Meeting Notes",
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "e6042a4c-041a-4743-b5f9-ee82e6c8f141",
+              "leftValue": "={{$json.properties[\"Meeting Date\"].date.start }}",
+              "rightValue": "={{ $('Format Calenda Event Payload').item.json.eventStart }}",
+              "operator": {
+                "type": "dateTime",
+                "operation": "before"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.3,
+      "position": [
+        560,
+        -16
+      ],
+      "id": "3381d343-86ae-476f-9bd0-31822b6eace3",
+      "name": "Is Previous Meeting"
+    },
+    {
+      "parameters": {
+        "resume": "specificTime",
+        "dateTime": "={{ $json.notifyAt }}"
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1456,
+        -16
+      ],
+      "id": "a4f9b4ee-6c71-4747-941c-d95944262df0",
+      "name": "Wait for Time to Come",
+      "webhookId": "6a135ac2-9ec9-4e4d-8d07-dfc53db9df92",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "resource": "repository",
+        "owner": {
+          "__rl": true,
+          "value": "",
+          "mode": "url"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "TestRepo",
+          "mode": "list",
+          "cachedResultName": "TestRepo",
+          "cachedResultUrl": "https://github.com/intuz4844-lgtm/TestRepo"
+        },
+        "getRepositoryIssuesFilters": {}
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        2272,
+        -224
+      ],
+      "id": "b92f9476-735a-4ddd-8e1d-7711dec75941",
+      "name": "Get PRs from Repo",
+      "webhookId": "01f704f4-ce69-431a-aa7e-c0c32471a695",
+      "alwaysOutputData": false,
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "options": {
+          "jql": "=text ~ \"{{ $json.meetingTitle }}\" ORDER BY updated DESC"
+        }
+      },
+      "type": "n8n-nodes-base.jira",
+      "typeVersion": 1,
+      "position": [
+        2400,
+        144
+      ],
+      "id": "21566834-55eb-4734-8cd9-6fad7e95e6b1",
+      "name": "Get Jira Issues Related to Meeting",
+      "alwaysOutputData": true,
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "jsCode": "// --------------------\n// 1. Read meeting context (single values)\n// --------------------\nconst keywordsRaw =\n  $('Extract Meeting Keywords').first().json.keywords || '';\n\nconst keywords = keywordsRaw\n  .toLowerCase()\n  .split(' ')\n  .filter(Boolean);\n\nconst lastMeetingDateStr =\n  $('Normalize Calendar and Notion Payloads').first().json.previousMeetingDate || null;\n\nconst lastMeetingDate = lastMeetingDateStr\n  ? new Date(lastMeetingDateStr)\n  : null;\n\n// --------------------\n// 2. Read PR list (multiple items)\n// --------------------\nconst prs = $input.all();\n\n// --------------------\n// 3. Filter PRs\n// --------------------\nconst filteredPRs = prs.filter(item => {\n  const pr = item.json;\n\n  // --- Date filter ---\n  if (lastMeetingDate && pr.created_at) {\n    const prCreatedAt = new Date(pr.created_at);\n    if (prCreatedAt <= lastMeetingDate) {\n      return false;\n    }\n  }\n\n  // --- Keyword relevance ---\n  const text = `${pr.title || ''} ${pr.body || ''}`.toLowerCase();\n\n  const matchesKeyword = keywords.some(k => text.includes(k));\n\n  return matchesKeyword;\n});\n\n// --------------------\n// 4. Return filtered PRs\n// --------------------\nreturn filteredPRs;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2496,
+        -224
+      ],
+      "id": "42c73ce1-fc7f-4f4d-8091-b7b1f191a9f5",
+      "name": "Filter PRs Related to Meeting",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        3024,
+        -32
+      ],
+      "id": "2fa4b205-fdd5-4d37-ae58-9bb89c4bebda",
+      "name": "Merge Jira Tickets and Github PR",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "8a5490e3-14cf-41ca-b56e-05475e3d92a8",
+              "name": "attendees",
+              "value": "={{ $('Add 15 minute Early Time').first().json.attendees }}",
+              "type": "array"
+            },
+            {
+              "id": "a6bb5f56-eab0-47bd-ae48-f705904b75c1",
+              "name": "message",
+              "value": "={{ $json }}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        3904,
+        -32
+      ],
+      "id": "1f8aa403-1b33-4db2-a934-30769efc0287",
+      "name": "Normalize Attendees and Slack Message"
+    },
+    {
+      "parameters": {
+        "url": "https://slack.com/api/users.lookupByEmail",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "email",
+              "value": "={{ $json.email }}"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ slack oauth token }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        4544,
+        -32
+      ],
+      "id": "b6b1c532-e757-44d1-83e1-a467179756d9",
+      "name": "Get User Slack Info from Email"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "74c0ae69-46aa-4d21-8f8e-b0b8b902a83e",
+              "leftValue": "={{ $json.ok }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        4736,
+        -32
+      ],
+      "id": "9664db2d-54d7-47e5-b7f5-1488f08ef33d",
+      "name": "Check Slack User Found"
+    },
+    {
+      "parameters": {
+        "select": "user",
+        "user": {
+          "__rl": true,
+          "value": "={{ $json.user.id }}",
+          "mode": "id"
+        },
+        "messageType": "block",
+        "blocksUi": "={{ $('Fan Out Attendees').item.json.message }}",
+        "text": "=Meeting Related Context",
+        "otherOptions": {
+          "includeLinkToWorkflow": false
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.4,
+      "position": [
+        5024,
+        -112
+      ],
+      "id": "bc1d3827-66a7-43b1-bad9-3e2eb9deb6f8",
+      "name": "Send Meeting Context in Slack DM",
+      "webhookId": "7908c57d-6a95-401d-8a5b-47edb6b32c8d",
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e16008af-f28f-4430-998f-a286632fbf23",
+              "name": "previousMeetingNotes",
+              "value": "={{$json.properties.Notes.rich_text[0].plain_text}}",
+              "type": "string"
+            },
+            {
+              "id": "4c6e7c45-69f7-47cf-b66a-6be3aa8bdc0f",
+              "name": "eventStart",
+              "value": "={{ $('Format Calenda Event Payload').item.json.eventStart }}",
+              "type": "string"
+            },
+            {
+              "id": "0e66c8bf-ff51-4a85-a1a1-cf5272f8d77f",
+              "name": "summary",
+              "value": "={{ $('Format Calenda Event Payload').item.json.summary }}",
+              "type": "string"
+            },
+            {
+              "id": "3039ba27-cc43-449b-8100-078554284ac5",
+              "name": "attendees",
+              "value": "={{ $('Format Calenda Event Payload').item.json.attendees }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        768,
+        -16
+      ],
+      "id": "e464edbb-db6e-42e5-bc35-68a6150202b9",
+      "name": "Normalize Calendar and Notion Payloads"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const title = ($json.summary || '').trim();\n\nconst keywords = title\n  .toLowerCase()\n  .replace(/[^a-z0-9\\s]/g, '') // remove symbols\n  .split(' ')\n  .filter(w => w.length > 2)   // drop short/noise words\n  .slice(0, 5)\n  .join(' ');\n\nreturn {\n  meetingTitle: title,\n  keywords\n};\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1680,
+        -16
+      ],
+      "id": "c3533f40-f9ac-4699-afee-47ba53bee757",
+      "name": "Extract Meeting Keywords"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\nif (!items.length) {\n  return [{ json: { tickets: [] } }];\n}\n\nconst tickets = items.map(i => {\n  const json = i.json;\n\n  // GitHub PR / Issue\n  if (json.html_url && json.number) {\n    return {\n      source: 'GitHub',\n      id: `PR-${json.number}`,\n      title: json.title,\n      url: json.html_url\n    };\n  }\n\n  // Jira Issue\n  if (json.key && json.fields) {\n    return {\n      source: 'Jira',\n      id: json.key,\n      title: json.fields.summary,\n      url: json.self\n    };\n  }\n\n  // Fallback (unknown shape)\n  return {};\n});\n\nreturn [\n  {\n    json: {\n      tickets\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3248,
+        -32
+      ],
+      "id": "5c25f9a8-5a19-40bf-b725-f6ca0756b1a9",
+      "name": "Prepare PRs and Jira Ticket List"
+    },
+    {
+      "parameters": {
+        "jsCode": "const attendees = $input.first().json.attendees;\n\nconst message =\n  $input.first().json.message;\n\nif (!attendees || attendees.length === 0) {\n  return [];\n}\n\n// Optional: filter declined attendees\nconst valid = attendees.filter(\n  a => a.responseStatus !== 'declined'\n);\n\nreturn valid.map(a => ({\n  json: {\n    email: a.email,\n    message\n  }\n}));\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4096,
+        -32
+      ],
+      "id": "4bf9a9f9-b2e2-4b5f-abe4-9a0be4922f14",
+      "name": "Fan Out Attendees"
+    },
+    {
+      "parameters": {
+        "content": "## The Trigger\n\n- Triggers when a new Google Calendar event is created  \n- Captures essential meeting details (title, start time, attendees)  \n- Formats the event data for downstream processing",
+        "height": 448,
+        "width": 432,
+        "color": 2
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -320,
+        -272
+      ],
+      "typeVersion": 1,
+      "id": "bf412bd2-8058-4b1a-9f6b-a00ece243aa6",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## Previous Meeting Context \n\n- Automatically pulls notes from the latest past meeting saved in Notion\n- Ensures only meetings that happened **before the current one** are considered \n- Cleans and organizes the information so it’s clear, consistent, and ready to use in the workflow",
+        "height": 448,
+        "width": 640,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        288,
+        -272
+      ],
+      "typeVersion": 1,
+      "id": "5a0a23c2-bc87-487b-954f-661962bc4005",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## Meeting Preparation Timing\n\nThis step makes sure the context is prepared at the right moment by:\n\n- Setting a variable which consist reminder time **15 minutes before the meeting starts**\n- Waiting until the correct time to continue the workflow\n- Extracting key words from the meeting title to understand what the meeting is about",
+        "height": 448,
+        "width": 768,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1104,
+        -272
+      ],
+      "typeVersion": 1,
+      "id": "40f21dab-accf-423d-b1be-868d761832f9",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "## Find Relevant Pull Requests\n\nThis step gathers development work related to the meeting by:\n\n- Fetching recent pull requests from the connected GitHub repository  \n- Filtering only the pull requests that are relevant to the current meeting topic\n",
+        "height": 288,
+        "width": 528,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        2160,
+        -544
+      ],
+      "typeVersion": 1,
+      "id": "476573a9-d028-450f-94bd-db6d27ba496b",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "## Find Relevant Jira Tickets\n\nThis step brings in task and issue context for the meeting by:\n\n- Fetching Jira tickets related to the meeting topic  \n- Ensuring only relevant work items are included in the meeting summary",
+        "height": 208,
+        "width": 544,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        2176,
+        336
+      ],
+      "typeVersion": 1,
+      "id": "a169d2a5-6a32-40bc-ad5d-f09fc152bde0",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "content": "## Prepare Meeting Work Items\n\nThis section builds the meeting agenda by:\n\n- Combining relevant GitHub pull requests and Jira tickets\n- Organizing them into a structured list for sharing",
+        "height": 416,
+        "width": 480,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        2944,
+        -272
+      ],
+      "typeVersion": 1,
+      "id": "dfc3ba31-7767-4cd4-ba40-924b12bdee53",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "content": "## Prepare and Send Slack Messages\n\nThis section prepares the meeting context message and delivers it to all attendees:\n\n- Builds a structured Slack message containing meeting details, topics, and previous notes  \n- Aligns the message with the attendee list from the calendar event  \n- Splits attendees into individual recipients so each person can be messaged separately\n",
+        "height": 416,
+        "width": 656,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        3616,
+        -272
+      ],
+      "typeVersion": 1,
+      "id": "0aff6e86-76c3-486a-a39d-6a5da2b4ae49",
+      "name": "Sticky Note6"
+    },
+    {
+      "parameters": {
+        "content": "## Send Meeting Context via Slack DM\n\nThis step ensures the meeting context is delivered directly to each attendee on Slack:\n\n- Looks up the Slack user using the attendee’s email address  \n- Verifies whether a matching Slack user exists  \n- Sends the meeting context as a direct message to the user if found  \n- Safely skips sending if no Slack user is available for the email\n",
+        "height": 544,
+        "width": 800,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        4464,
+        -384
+      ],
+      "typeVersion": 1,
+      "id": "6e4119b0-2967-4cb5-b1d2-152e7fc0d856",
+      "name": "Sticky Note7"
+    },
+    {
+      "parameters": {
+        "content": "# 🧠 Pre-Meeting Context Automation\n\n## How it works\nThis workflow automatically prepares and sends relevant meeting context to attendees before a scheduled Google Calendar meeting.\nWhen a new meeting is created in Google Calendar, the workflow captures the event details such as the meeting title, start time, and attendees. It then checks Notion to find notes from the most recent previous meeting, ensuring continuity and context.\nNext, the workflow waits until 15 minutes before the meeting starts. At that time, it extracts keywords from the meeting title and uses them to find relevant GitHub pull requests and Jira issues related to the meeting topic. These items are combined into a single, clean list.\nA well-formatted Slack message is then built, containing:\n* The meeting name and time\n* Relevant GitHub PRs and Jira tickets\n* Notes from the previous meeting\n\nFinally, the workflow looks up each attendee on Slack using their email address and sends the meeting context as a direct message. If a Slack user is not found, the workflow safely skips that attendee and continues without failing.\n\n## Setup steps\n1. Connect your Google Calendar account to detect newly created meetings\n2. Connect Notion and select the database that stores meeting notes\n3. Connect your GitHub account and choose the repository to scan for PRs\n4. Connect Jira and ensure JQL access for fetching related issues\n5. Connect your Slack account with permission to look up users and send DMs\n6. Verify attendee emails in Calendar match their Slack email addresses\n7. Activate the workflow and create a new calendar meeting to test\n",
+        "height": 624,
+        "width": 912
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -992,
+        -1104
+      ],
+      "typeVersion": 1,
+      "id": "7dcc8e5d-4fe6-4943-8f8c-7a70abef64c9",
+      "name": "Sticky Note8"
+    }
+  ],
+  "connections": {
+    "Format Calenda Event Payload": {
+      "main": [
+        [
+          {
+            "node": "Get Last Meeting Notes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add 15 minute Early Time": {
+      "main": [
+        [
+          {
+            "node": "Wait for Time to Come",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Message for Slack": {
+      "main": [
+        [
+          {
+            "node": "Normalize Attendees and Slack Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Capture New Google Calendar Event": {
+      "main": [
+        [
+          {
+            "node": "Format Calenda Event Payload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Last Meeting Notes": {
+      "main": [
+        [
+          {
+            "node": "Is Previous Meeting",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Previous Meeting": {
+      "main": [
+        [
+          {
+            "node": "Normalize Calendar and Notion Payloads",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait for Time to Come": {
+      "main": [
+        [
+          {
+            "node": "Extract Meeting Keywords",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get PRs from Repo": {
+      "main": [
+        [
+          {
+            "node": "Filter PRs Related to Meeting",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Jira Issues Related to Meeting": {
+      "main": [
+        [
+          {
+            "node": "Merge Jira Tickets and Github PR",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Filter PRs Related to Meeting": {
+      "main": [
+        [
+          {
+            "node": "Merge Jira Tickets and Github PR",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge Jira Tickets and Github PR": {
+      "main": [
+        [
+          {
+            "node": "Prepare PRs and Jira Ticket List",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Attendees and Slack Message": {
+      "main": [
+        [
+          {
+            "node": "Fan Out Attendees",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get User Slack Info from Email": {
+      "main": [
+        [
+          {
+            "node": "Check Slack User Found",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Slack User Found": {
+      "main": [
+        [
+          {
+            "node": "Send Meeting Context in Slack DM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Calendar and Notion Payloads": {
+      "main": [
+        [
+          {
+            "node": "Add 15 minute Early Time",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Meeting Keywords": {
+      "main": [
+        [
+          {
+            "node": "Get Jira Issues Related to Meeting",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get PRs from Repo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare PRs and Jira Ticket List": {
+      "main": [
+        [
+          {
+            "node": "Build Message for Slack",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fan Out Attendees": {
+      "main": [
+        [
+          {
+            "node": "Get User Slack Info from Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": {
+    "node:Google Calendar Trigger": {
+      "lastTimeChecked": "2026-01-21T05:06:48Z"
+    }
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "Capture New Google Calendar Event": [
+      {
+        "json": {
+          "kind": "calendar#event",
+          "etag": "\"3537939173262622\"",
+          "id": "3e320iabuv8fcq877k2uq5hpkc",
+          "status": "confirmed",
+          "htmlLink": "https://www.google.com/calendar/event?eid=M2UzMjBpYWJ1djhmY3E4NzdrMnVxNWhwa2MgaW50dXo0ODQ0QG0",
+          "created": "2026-01-21T04:25:48.000Z",
+          "updated": "2026-01-21T04:26:26.631Z",
+          "summary": "test meeting",
+          "creator": {
+            "email": "intuz4844@gmail.com",
+            "self": true
+          },
+          "organizer": {
+            "email": "intuz4844@gmail.com",
+            "self": true
+          },
+          "start": {
+            "dateTime": "2026-01-21T10:00:00+05:30",
+            "timeZone": "Asia/Kolkata"
+          },
+          "end": {
+            "dateTime": "2026-01-21T11:00:00+05:30",
+            "timeZone": "Asia/Kolkata"
+          },
+          "iCalUID": "3e320iabuv8fcq877k2uq5hpkc@google.com",
+          "sequence": 0,
+          "attendees": [
+            {
+              "email": "intuz4844@gmail.com",
+              "organizer": true,
+              "self": true,
+              "responseStatus": "accepted"
+            },
+            {
+              "email": "dhanrajmahida45@gmail.com",
+              "responseStatus": "needsAction"
+            }
+          ],
+          "hangoutLink": "https://meet.google.com/mwd-gmfk-nnz",
+          "conferenceData": {
+            "entryPoints": [
+              {
+                "entryPointType": "video",
+                "uri": "https://meet.google.com/mwd-gmfk-nnz",
+                "label": "meet.google.com/mwd-gmfk-nnz"
+              }
+            ],
+            "conferenceSolution": {
+              "key": {
+                "type": "hangoutsMeet"
+              },
+              "name": "Google Meet",
+              "iconUri": "https://fonts.gstatic.com/s/i/productlogos/meet_2020q4/v6/web-512dp/logo_meet_2020q4_color_2x_web_512dp.png"
+            },
+            "conferenceId": "mwd-gmfk-nnz"
+          },
+          "reminders": {
+            "useDefault": true
+          },
+          "eventType": "default"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "versionId": "84f78caa-7a3d-48ba-8985-b6a9c715a2ab",
+  "activeVersionId": null,
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2026-01-19T09:35:12.989Z",
+      "createdAt": "2026-01-19T09:35:12.989Z",
+      "role": "workflow:owner",
+      "workflowId": "0mHoUCxDP4DV8hMU",
+      "projectId": "Bp7b9VxwF2dQ527l"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}

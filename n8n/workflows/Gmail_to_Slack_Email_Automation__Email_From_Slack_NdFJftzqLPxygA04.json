@@ -228,7 +228,12 @@
       "id": "cab16130-63b2-430a-8d35-4c1df5d66612",
       "name": "Sent Reply Email",
       "webhookId": "4d3d2e0e-5d6c-4743-8c17-69322ebbd48c",
-      "credentials": {}
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "z6vPNOHWO0MPOHYP",
+          "name": "Gmail account 3"
+        }
+      }
     },
     {
       "parameters": {

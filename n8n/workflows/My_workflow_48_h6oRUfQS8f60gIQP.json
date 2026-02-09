@@ -1,0 +1,364 @@
+{
+  "updatedAt": "2026-01-23T13:50:05.894Z",
+  "createdAt": "2026-01-22T06:26:46.931Z",
+  "id": "h6oRUfQS8f60gIQP",
+  "name": "My workflow 48",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        96
+      ],
+      "id": "ed0072a9-e944-4b2e-afe3-6089131c39c8",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "be152309-6310-4e88-a972-cc00ac819de4",
+              "name": "workflow_name",
+              "value": "Automate Sales Lead Assignment",
+              "type": "string"
+            },
+            {
+              "id": "cf188495-681e-4aff-9b02-7159e9138526",
+              "name": "workflow_url",
+              "value": "https://n8n.io/creators/intuz/",
+              "type": "string"
+            },
+            {
+              "id": "a005bca3-f69a-4308-a1aa-9554ee8172c8",
+              "name": "problem",
+              "value": "Sales leads are manually assigned causing delays",
+              "type": "string"
+            },
+            {
+              "id": "90abde95-951d-4b92-8401-c2f8cbd9c4df",
+              "name": "solution",
+              "value": "Automatically assign leads based on region and availability",
+              "type": "string"
+            },
+            {
+              "id": "426b47e3-2728-4ebd-8d14-af1d35e69a51",
+              "name": "target_audience",
+              "value": "Sales teams and startups",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        224,
+        96
+      ],
+      "id": "9fd9e6d7-f85d-496b-882b-0419f8f2afa9",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "model": "meta-llama/llama-3-8b-instruct",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        528,
+        320
+      ],
+      "id": "ccea1e2d-9de1-4270-b239-b6c75bf0dfe6",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "DGQwXZXKlvHZn8Ky",
+          "name": "OpenRouter account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "deepseek/deepseek-r1",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        880,
+        320
+      ],
+      "id": "185d9191-4d22-4ecf-aa72-9084cfc3d567",
+      "name": "OpenRouter Chat Model2",
+      "credentials": {
+        "openRouterApi": {
+          "id": "DGQwXZXKlvHZn8Ky",
+          "name": "OpenRouter account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "meta-llama/llama-3-8b-instruct",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        1200,
+        320
+      ],
+      "id": "350ded75-6868-40da-ba8b-23ac22521388",
+      "name": "OpenRouter Chat Model3",
+      "credentials": {
+        "openRouterApi": {
+          "id": "DGQwXZXKlvHZn8Ky",
+          "name": "OpenRouter account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a5d17ffa-4506-42db-889e-69931ab4599a",
+              "name": "script",
+              "value": "={{ $('Generate Script').item.json.text }}",
+              "type": "string"
+            },
+            {
+              "id": "27fb86ca-0222-4251-b214-d154a6600507",
+              "name": "scenes",
+              "value": "={{ $('Generate Scenes').item.json.text }}",
+              "type": "string"
+            },
+            {
+              "id": "31a5ccb0-e16e-41dd-bfbc-d6871c5f5d2c",
+              "name": "subtitles",
+              "value": "={{ $json.output }}",
+              "type": "string"
+            },
+            {
+              "id": "e1282a35-f5c7-4105-96bd-16e2a3b0e3c0",
+              "name": "workflow_url",
+              "value": "={{ $('Edit Fields').item.json.workflow_url }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1504,
+        96
+      ],
+      "id": "f824f3e1-ee65-43f9-95ae-8842ec91600e",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Write a 2–3 minute marketing video script.\n\nWorkflow Name: {{$json.workflow_name}}\n\nProblem:\n{{$json.problem}}\n\nSolution:\n{{$json.solution}}\n\nTarget Audience:\n{{$json.target_audience}}\n\nRules:\n- Start with a strong hook\n- Avoid technical jargon\n- Explain benefits clearly\n- End with a soft CTA\n- Tone: simple, confident, curiosity-driven\n",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        448,
+        96
+      ],
+      "id": "243e1f92-2db5-4fbd-836c-80e3c8ca3479",
+      "name": "Generate Script"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Break this script into scenes.\n\nFor each scene provide:\n- Scene number\n- Narration text\n- Visual suggestion (simple, non-technical)\n- When to show workflow screenshot (yes/no)\n\nScript:\n{{ $json.text }}\n",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        800,
+        96
+      ],
+      "id": "137e8483-7ffe-49b2-b54b-c189280a3b57",
+      "name": "Generate Scenes"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Convert this script into SRT subtitles.\nKeep sentences short and readable.\n\nScript:\n{{ $('Generate Script').item.json.text }}\n",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        1152,
+        96
+      ],
+      "id": "82a0d3e5-4693-4b72-a4cd-9cef02404392",
+      "name": "Generate Subtitle"
+    },
+    {
+      "parameters": {
+        "resource": "video",
+        "modelId": {
+          "__rl": true,
+          "value": "models/veo-3.0-fast-generate-001",
+          "mode": "list",
+          "cachedResultName": "models/veo-3.0-fast-generate-001"
+        },
+        "prompt": "=You are generating a short cinematic video clip for a marketing video.\n\nContext (for understanding only, do not render text):\n- Video topic: Automate Sales Lead Assignment\n- High-level idea: Sales teams struggle with manual lead assignment, then discover automation\n- Target audience: Sales teams and startups\n\nScene to generate:\nA cinematic scene showing the following moment:\n{{ $json.scenes }}\n\nVisual direction:\n- Environment: modern SaaS startup office\n- Characters: sales professionals\n- Action: show the problem or solution visually, without text\n- Emotion: {{ stressed / relieved / confident }}\n\nStyle:\n- Realistic, professional, cinematic\n- Smooth camera movement\n- Soft lighting\n- Shallow depth of field\n- 16:9 aspect ratio\n\nRules:\n- No on-screen text\n- No subtitles\n- No narration\n- No UI labels\n- Focus on visual storytelling only\n",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        1712,
+        96
+      ],
+      "id": "634c20e1-afb7-4f74-bcb9-00e86309b874",
+      "name": "Generate a video",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "FfxBgEFa9nNnhnWh",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Generate Script",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Generate Script",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Generate Scenes",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Generate Subtitle",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Script": {
+      "main": [
+        [
+          {
+            "node": "Generate Scenes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Scenes": {
+      "main": [
+        [
+          {
+            "node": "Generate Subtitle",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Subtitle": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Generate a video",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "476cd2c6-ed0b-489f-8686-16423fd8d7f7",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-01-22T06:26:46.931Z",
+      "createdAt": "2026-01-22T06:26:46.931Z",
+      "role": "workflow:owner",
+      "workflowId": "h6oRUfQS8f60gIQP",
+      "projectId": "Bp7b9VxwF2dQ527l"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}

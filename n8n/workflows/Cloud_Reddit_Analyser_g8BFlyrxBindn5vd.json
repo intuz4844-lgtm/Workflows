@@ -686,7 +686,12 @@
       ],
       "id": "85e6842d-6ec8-42b8-9471-0ab340448207",
       "name": "Add Rows - MLOps Subreddit",
-      "credentials": {}
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "4AOyTwCgFWDhljl6",
+          "name": "Google Sheets account 3"
+        }
+      }
     },
     {
       "parameters": {
@@ -713,7 +718,12 @@
       "id": "b69621d3-7335-45e6-a988-15bd34ed511f",
       "name": "Get Rows - MLOps Subreddit",
       "alwaysOutputData": true,
-      "credentials": {}
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "4AOyTwCgFWDhljl6",
+          "name": "Google Sheets account 3"
+        }
+      }
     },
     {
       "parameters": {
@@ -741,7 +751,12 @@
       ],
       "id": "78238f11-83db-45e0-87e7-f1ef1fe44477",
       "name": "Get Rows - MLOps Subreddit1",
-      "credentials": {}
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "4AOyTwCgFWDhljl6",
+          "name": "Google Sheets account 3"
+        }
+      }
     },
     {
       "parameters": {
@@ -854,7 +869,12 @@
       ],
       "id": "219e3d2a-a20e-4a39-ae6a-7cece2d64a5e",
       "name": "Update To Do - MLOps Subreddit",
-      "credentials": {}
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "4AOyTwCgFWDhljl6",
+          "name": "Google Sheets account 3"
+        }
+      }
     },
     {
       "parameters": {
@@ -963,7 +983,12 @@
       ],
       "id": "bda9fe02-06af-4974-a99f-1c2f36c0c076",
       "name": "Add rows - ML Subreddit",
-      "credentials": {}
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "4AOyTwCgFWDhljl6",
+          "name": "Google Sheets account 3"
+        }
+      }
     },
     {
       "parameters": {
@@ -992,7 +1017,12 @@
       "id": "2fe0bc19-9c52-4a09-9507-dad617f45c0d",
       "name": "Get Rows - ML Subreddit",
       "alwaysOutputData": true,
-      "credentials": {}
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "4AOyTwCgFWDhljl6",
+          "name": "Google Sheets account 3"
+        }
+      }
     },
     {
       "parameters": {
@@ -1020,7 +1050,12 @@
       ],
       "id": "2f4710af-62a7-4258-a98e-ee797c5d92ea",
       "name": "Get Rows - ML Subreddit1",
-      "credentials": {}
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "4AOyTwCgFWDhljl6",
+          "name": "Google Sheets account 3"
+        }
+      }
     },
     {
       "parameters": {
@@ -1132,7 +1167,12 @@
       ],
       "id": "7a75b1be-1419-4a58-930a-73da66a7bc66",
       "name": "Update TO Do - ML Subreddit",
-      "credentials": {}
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "4AOyTwCgFWDhljl6",
+          "name": "Google Sheets account 3"
+        }
+      }
     },
     {
       "parameters": {
@@ -1241,7 +1281,12 @@
       ],
       "id": "1629c9d2-0541-459b-aa77-6e13bacef3f7",
       "name": "Add rows - AWS Subreddit1",
-      "credentials": {}
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "4AOyTwCgFWDhljl6",
+          "name": "Google Sheets account 3"
+        }
+      }
     },
     {
       "parameters": {
@@ -1270,7 +1315,12 @@
       "id": "1a5e7d90-a1aa-4530-9d43-c6793b5207b9",
       "name": "Get Rows - AWS Subreddit2",
       "alwaysOutputData": true,
-      "credentials": {}
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "4AOyTwCgFWDhljl6",
+          "name": "Google Sheets account 3"
+        }
+      }
     },
     {
       "parameters": {
@@ -1298,7 +1348,12 @@
       ],
       "id": "9a5f5555-3e6a-41ef-9cd0-cafbeed4c52e",
       "name": "Get Rows - AWS Subreddit3",
-      "credentials": {}
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "4AOyTwCgFWDhljl6",
+          "name": "Google Sheets account 3"
+        }
+      }
     },
     {
       "parameters": {
@@ -1411,7 +1466,12 @@
       ],
       "id": "6b55daa8-6c03-4d3a-a990-21d3ed8ff16e",
       "name": "Update TO Do - AWS Subreddit1",
-      "credentials": {}
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "4AOyTwCgFWDhljl6",
+          "name": "Google Sheets account 3"
+        }
+      }
     },
     {
       "parameters": {},
@@ -1456,7 +1516,12 @@
       ],
       "id": "926359e2-d7ba-48a1-9849-c94b554e4881",
       "name": "OpenAI Chat Model",
-      "credentials": {}
+      "credentials": {
+        "openAiApi": {
+          "id": "oj7UQNx9RfhpCB2B",
+          "name": "OpenAi account"
+        }
+      }
     },
     {
       "parameters": {

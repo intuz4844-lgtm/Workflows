@@ -75,12 +75,7 @@
       "id": "0c8a3201-4f13-451f-aee7-8a0715a491d4",
       "name": "Capture New Google Calendar Event",
       "alwaysOutputData": false,
-      "credentials": {
-        "googleCalendarOAuth2Api": {
-          "id": "jafQGIXl7ds10xxO",
-          "name": "Google Calendar account"
-        }
-      }
+      "credentials": {}
     },
     {
       "parameters": {
@@ -114,12 +109,7 @@
       ],
       "id": "d9d65695-2382-4d16-aa26-2cb332fb6ef6",
       "name": "Get Last Meeting Notes",
-      "credentials": {
-        "notionApi": {
-          "id": "nd4tEl2QZ7S9vV3M",
-          "name": "Notion account 3"
-        }
-      }
+      "credentials": {}
     },
     {
       "parameters": {
@@ -199,12 +189,7 @@
       "name": "Get PRs from Repo",
       "webhookId": "01f704f4-ce69-431a-aa7e-c0c32471a695",
       "alwaysOutputData": false,
-      "credentials": {
-        "githubOAuth2Api": {
-          "id": "Kj2Q4iSji3JLkHPB",
-          "name": "GitHub account"
-        }
-      }
+      "credentials": {}
     },
     {
       "parameters": {
@@ -222,12 +207,7 @@
       "id": "21566834-55eb-4734-8cd9-6fad7e95e6b1",
       "name": "Get Jira Issues Related to Meeting",
       "alwaysOutputData": true,
-      "credentials": {
-        "jiraSoftwareCloudApi": {
-          "id": "yQIIq3akNlGrT6Af",
-          "name": "Jira SW Cloud account 2"
-        }
-      }
+      "credentials": {}
     },
     {
       "parameters": {
@@ -373,12 +353,7 @@
       "id": "bc1d3827-66a7-43b1-bad9-3e2eb9deb6f8",
       "name": "Send Meeting Context in Slack DM",
       "webhookId": "7908c57d-6a95-401d-8a5b-47edb6b32c8d",
-      "credentials": {
-        "slackApi": {
-          "id": "ASwwSjm4vc3kKDYq",
-          "name": "Slack account"
-        }
-      }
+      "credentials": {}
     },
     {
       "parameters": {

@@ -1,0 +1,116 @@
+{
+  "updatedAt": "2026-02-09T05:25:46.778Z",
+  "createdAt": "2026-02-09T05:25:46.778Z",
+  "id": "bbleQl4KLUP84QAT",
+  "name": "My Sub-workflow",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "type": "n8n-nodes-base.noOp",
+      "name": "Replace Me",
+      "typeVersion": 1,
+      "position": [
+        816,
+        240
+      ],
+      "id": "804c3083-2791-4d07-aba4-16941f189e8a",
+      "disabled": false,
+      "parameters": {}
+    },
+    {
+      "id": "6c0bb77f-5209-4449-a2dc-17221022bd91",
+      "typeVersion": 1.1,
+      "name": "Start",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "position": [
+        608,
+        240
+      ],
+      "parameters": {
+        "inputSource": "passthrough"
+      }
+    }
+  ],
+  "connections": {
+    "Start": {
+      "main": [
+        [
+          {
+            "node": "Replace Me",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": null,
+  "versionId": "f54bb59c-722c-4176-804a-6cce06c79f3d",
+  "activeVersionId": "f54bb59c-722c-4176-804a-6cce06c79f3d",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-02-09T05:25:46.778Z",
+      "createdAt": "2026-02-09T05:25:46.778Z",
+      "role": "workflow:owner",
+      "workflowId": "bbleQl4KLUP84QAT",
+      "projectId": "Bp7b9VxwF2dQ527l"
+    }
+  ],
+  "activeVersion": {
+    "updatedAt": "2026-02-09T05:25:46.778Z",
+    "createdAt": "2026-02-09T05:25:46.778Z",
+    "versionId": "f54bb59c-722c-4176-804a-6cce06c79f3d",
+    "workflowId": "bbleQl4KLUP84QAT",
+    "nodes": [
+      {
+        "type": "n8n-nodes-base.noOp",
+        "name": "Replace Me",
+        "typeVersion": 1,
+        "position": [
+          816,
+          240
+        ],
+        "id": "804c3083-2791-4d07-aba4-16941f189e8a",
+        "disabled": false,
+        "parameters": {}
+      },
+      {
+        "id": "6c0bb77f-5209-4449-a2dc-17221022bd91",
+        "typeVersion": 1.1,
+        "name": "Start",
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "position": [
+          608,
+          240
+        ],
+        "parameters": {
+          "inputSource": "passthrough"
+        }
+      }
+    ],
+    "connections": {
+      "Start": {
+        "main": [
+          [
+            {
+              "node": "Replace Me",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Dhanraj Mahida",
+    "name": null,
+    "description": null
+  },
+  "tags": []
+}

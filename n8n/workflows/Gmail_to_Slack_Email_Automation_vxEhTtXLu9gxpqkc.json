@@ -111,7 +111,12 @@
       "id": "60fc0df9-fe4b-4586-9f7c-d35b33b3b1b2",
       "name": "Invite a user to a channel",
       "webhookId": "3a96fc13-9cd1-4ae3-b70d-3aff21c2faec",
-      "credentials": {}
+      "credentials": {
+        "slackApi": {
+          "id": "ASwwSjm4vc3kKDYq",
+          "name": "Slack account"
+        }
+      }
     },
     {
       "parameters": {
@@ -204,7 +209,12 @@
       ],
       "id": "8028e034-b129-4f54-8623-c6045d44c1e8",
       "name": "OpenRouter Chat Model",
-      "credentials": {}
+      "credentials": {
+        "openRouterApi": {
+          "id": "DGQwXZXKlvHZn8Ky",
+          "name": "OpenRouter account 2"
+        }
+      }
     },
     {
       "parameters": {
@@ -331,7 +341,12 @@
       ],
       "id": "7eacc984-5ff7-4566-a37d-6343635afcf8",
       "name": "OpenRouter Chat Model1",
-      "credentials": {}
+      "credentials": {
+        "openRouterApi": {
+          "id": "DGQwXZXKlvHZn8Ky",
+          "name": "OpenRouter account 2"
+        }
+      }
     },
     {
       "parameters": {
@@ -360,7 +375,12 @@
       ],
       "id": "cc8882b2-b5fd-423a-88d7-477a439e6e7b",
       "name": "Capture Gmail Event",
-      "credentials": {}
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "z6vPNOHWO0MPOHYP",
+          "name": "Gmail account 3"
+        }
+      }
     },
     {
       "parameters": {
@@ -425,7 +445,12 @@
       "id": "a8f5a2fb-9ce8-4f45-8ac0-2129fc912288",
       "name": "Get Channels List",
       "webhookId": "49e574f9-eb54-48c1-8e47-2ae4557cc052",
-      "credentials": {}
+      "credentials": {
+        "slackApi": {
+          "id": "ASwwSjm4vc3kKDYq",
+          "name": "Slack account"
+        }
+      }
     },
     {
       "parameters": {
@@ -446,7 +471,12 @@
       "id": "7666c7b1-2882-43cf-9416-377bb7c476f7",
       "name": "Join Slack Channel",
       "webhookId": "f0a48168-ae21-4c7a-8922-12fbf40d3629",
-      "credentials": {}
+      "credentials": {
+        "slackApi": {
+          "id": "ASwwSjm4vc3kKDYq",
+          "name": "Slack account"
+        }
+      }
     },
     {
       "parameters": {
@@ -472,7 +502,12 @@
       "id": "87e72e20-b706-4846-8989-3fec085dfeb2",
       "name": "Post Message in Channel",
       "webhookId": "d0165671-b66f-475e-a63e-856d23090eab",
-      "credentials": {}
+      "credentials": {
+        "slackApi": {
+          "id": "ASwwSjm4vc3kKDYq",
+          "name": "Slack account"
+        }
+      }
     },
     {
       "parameters": {
@@ -488,7 +523,12 @@
       "id": "3d934bb1-af42-4451-8cc1-49dd47e89d07",
       "name": "Create Slack Channel",
       "webhookId": "919296d8-8f3b-4ec3-9416-d20f55df8258",
-      "credentials": {}
+      "credentials": {
+        "slackApi": {
+          "id": "ASwwSjm4vc3kKDYq",
+          "name": "Slack account"
+        }
+      }
     },
     {
       "parameters": {
@@ -514,7 +554,12 @@
       "id": "7ef887f5-abdd-4d67-a7a1-e62d01eca0c3",
       "name": "Post Message in Created Channel",
       "webhookId": "d0165671-b66f-475e-a63e-856d23090eab",
-      "credentials": {}
+      "credentials": {
+        "slackApi": {
+          "id": "ASwwSjm4vc3kKDYq",
+          "name": "Slack account"
+        }
+      }
     },
     {
       "parameters": {

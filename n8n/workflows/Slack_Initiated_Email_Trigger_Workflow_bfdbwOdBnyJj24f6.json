@@ -103,7 +103,12 @@
       "id": "79c8c3ed-b5f4-4e1c-856a-ffbda086dd67",
       "name": "Send an Email",
       "webhookId": "b4d4d14d-f74d-4a28-9533-160366aa2921",
-      "credentials": {}
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "ovkUosdcdYdtciSp",
+          "name": "Gmail account 2"
+        }
+      }
     },
     {
       "parameters": {
@@ -386,7 +391,12 @@
       "id": "ba7cb7fa-bee7-4bd9-9e47-1671eb55617f",
       "name": "Send Success Response",
       "webhookId": "536aaf97-4b33-4af0-ae9f-d5f9cac1640b",
-      "credentials": {}
+      "credentials": {
+        "slackApi": {
+          "id": "ASwwSjm4vc3kKDYq",
+          "name": "Slack account"
+        }
+      }
     },
     {
       "parameters": {
@@ -410,7 +420,12 @@
       "id": "ae5216ba-47bc-44f3-9e7a-78a6595cefbc",
       "name": "Send Failure Response",
       "webhookId": "536aaf97-4b33-4af0-ae9f-d5f9cac1640b",
-      "credentials": {}
+      "credentials": {
+        "slackApi": {
+          "id": "ASwwSjm4vc3kKDYq",
+          "name": "Slack account"
+        }
+      }
     },
     {
       "parameters": {

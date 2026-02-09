@@ -77,12 +77,7 @@
       ],
       "id": "ccea1e2d-9de1-4270-b239-b6c75bf0dfe6",
       "name": "OpenRouter Chat Model",
-      "credentials": {
-        "openRouterApi": {
-          "id": "DGQwXZXKlvHZn8Ky",
-          "name": "OpenRouter account 2"
-        }
-      }
+      "credentials": {}
     },
     {
       "parameters": {
@@ -97,12 +92,7 @@
       ],
       "id": "185d9191-4d22-4ecf-aa72-9084cfc3d567",
       "name": "OpenRouter Chat Model2",
-      "credentials": {
-        "openRouterApi": {
-          "id": "DGQwXZXKlvHZn8Ky",
-          "name": "OpenRouter account 2"
-        }
-      }
+      "credentials": {}
     },
     {
       "parameters": {
@@ -117,12 +107,7 @@
       ],
       "id": "350ded75-6868-40da-ba8b-23ac22521388",
       "name": "OpenRouter Chat Model3",
-      "credentials": {
-        "openRouterApi": {
-          "id": "DGQwXZXKlvHZn8Ky",
-          "name": "OpenRouter account 2"
-        }
-      }
+      "credentials": {}
     },
     {
       "parameters": {
@@ -230,12 +215,7 @@
       ],
       "id": "634c20e1-afb7-4f74-bcb9-00e86309b874",
       "name": "Generate a video",
-      "credentials": {
-        "googlePalmApi": {
-          "id": "FfxBgEFa9nNnhnWh",
-          "name": "Google Gemini(PaLM) Api account 2"
-        }
-      }
+      "credentials": {}
     }
   ],
   "connections": {

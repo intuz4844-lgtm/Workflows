@@ -27,12 +27,7 @@
       ],
       "id": "12766054-2804-46ab-a99d-5b0024f196c3",
       "name": "HTTP Request",
-      "credentials": {
-        "n8nApi": {
-          "id": "SQMJ2apMfuH2yTkQ",
-          "name": "n8n account"
-        }
-      }
+      "credentials": {}
     },
     {
       "parameters": {
@@ -155,12 +150,7 @@
         80
       ],
       "typeVersion": 1,
-      "credentials": {
-        "n8nApi": {
-          "id": "SQMJ2apMfuH2yTkQ",
-          "name": "n8n account"
-        }
-      }
+      "credentials": {}
     },
     {
       "parameters": {
@@ -563,12 +553,7 @@
       "typeVersion": 1,
       "alwaysOutputData": true,
       "webhookId": "82cdfafe-f7ed-4d97-84b7-47cb46fb9903",
-      "credentials": {
-        "githubOAuth2Api": {
-          "id": "Kj2Q4iSji3JLkHPB",
-          "name": "GitHub OAuth2"
-        }
-      },
+      "credentials": {},
       "continueOnFail": true
     },
     {
@@ -620,12 +605,7 @@
       ],
       "id": "8a5b15c1-9432-4cea-a468-2fa4192943b8",
       "name": "Get many workflows",
-      "credentials": {
-        "n8nApi": {
-          "id": "SQMJ2apMfuH2yTkQ",
-          "name": "n8n account"
-        }
-      }
+      "credentials": {}
     },
     {
       "parameters": {
@@ -725,12 +705,7 @@
       "id": "7e468183-28d3-4bd8-8a57-a1e64ac4456c",
       "name": "Create a file",
       "webhookId": "03c168f5-58b5-4ee9-aa86-c258811a1acd",
-      "credentials": {
-        "githubOAuth2Api": {
-          "id": "Kj2Q4iSji3JLkHPB",
-          "name": "GitHub OAuth2"
-        }
-      }
+      "credentials": {}
     },
     {
       "parameters": {
@@ -1022,12 +997,7 @@
       ],
       "webhookId": "e5e4ce8b-74a3-4b94-83ca-351edc280faf",
       "typeVersion": 1,
-      "credentials": {
-        "githubOAuth2Api": {
-          "id": "Kj2Q4iSji3JLkHPB",
-          "name": "GitHub OAuth2"
-        }
-      }
+      "credentials": {}
     },
     {
       "parameters": {

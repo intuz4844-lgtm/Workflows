@@ -1,0 +1,575 @@
+{
+  "updatedAt": "2026-01-12T08:49:04.908Z",
+  "createdAt": "2026-01-06T11:16:46.636Z",
+  "id": "bfdbwOdBnyJj24f6",
+  "name": "Slack-Initiated Email Trigger Workflow",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "50ab0d11-34e6-4741-aad2-a72937f2ec23",
+              "leftValue": "={{ $node[\"Capture Slack Events\"].json.body.command }}",
+              "rightValue": "/send-email",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        224,
+        144
+      ],
+      "id": "6b5c7a4d-de2d-4904-bd46-c2c026732364",
+      "name": "Check command"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\n// Always read data from the first node named \"Webhook\"\nconst webhookItems = $node[\"Capture Slack Events\"].json;\n\n// Slack sends payload as a string inside body.payload\nconst payloadString = webhookItems.body.payload;\n\n// Parse Slack payload string into JSON\nconst payload = JSON.parse(payloadString);\n\n// Return parsed payload as n8n items\nreturn [\n  {\n    json: {\n      ...payload,\n      // optional metadata\n      _meta: {\n        webhookUrl: webhookItems.webhookUrl,\n        executionMode: webhookItems.executionMode,\n      },\n    },\n  },\n];\n\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        720,
+        384
+      ],
+      "id": "c627dc55-686f-409a-95e0-e10df943d549",
+      "name": "Parse Payload Data"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "be1d60f5-eeab-42d4-a6d2-08947199e182",
+              "leftValue": "={{ $json.type }}",
+              "rightValue": "view_submission",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1248,
+        192
+      ],
+      "id": "3d778667-249b-496b-a8e4-c79f3641e639",
+      "name": "Check Type"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.view.state.values.email.to.value }}",
+        "subject": "={{ $json.view.state.values.subject.subject.value }}",
+        "message": "={{ $json.view.state.values.body.body.value }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        2288,
+        112
+      ],
+      "id": "79c8c3ed-b5f4-4e1c-856a-ffbda086dd67",
+      "name": "Send an Email",
+      "webhookId": "b4d4d14d-f74d-4a28-9533-160366aa2921",
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "content": "\n\n\n\n\n\n\n\n\n\n\n\n### 🔹 1. Webhook(Capture Slack Events) \nThis webhook is the single entry point for all Slack interactions.\nHandles:\n* Slash command: ***/send-email***\n* This will trigger when you send /send_email in a channel, and also trigger when you select Sends as Email from the message options from the three dots on the message",
+        "height": 336,
+        "width": 448
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -928,
+        128
+      ],
+      "typeVersion": 1,
+      "id": "20b2b09c-95cd-41b9-a23f-8533efbe3861",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "### 🔹 2. IF Node (Check Command)\n* This IF node verifies whether the incoming request is a slash command.\n* This will check whether this trigger is coming from a slash command or on the click of the message options shortcut.",
+        "height": 336,
+        "width": 288,
+        "color": 2
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        128,
+        -48
+      ],
+      "typeVersion": 1,
+      "id": "b105e76e-b8d8-4f72-8a82-96b2b5c1a4bc",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "\n\n\n\n\n\n\n\n\n\n\n\n\n### 🔹 3. Code Node (Parse Payload Data):\n* When a webhook request is triggered from a \nShortcut, the payload data is received in body.payload \nas a JSON string.\n* The same behavior occurs when a modal is submitted\nthe payload is also sent in stringified JSON format.\n* Therefore, the payload needs to be parsed to convert it \ninto a usable JSON object before processing.\n\n",
+        "height": 464,
+        "width": 352,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        608,
+        368
+      ],
+      "typeVersion": 1,
+      "id": "0e4d111f-47bc-4b6e-a5c4-7683bd47b629",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "### 🔹 4. IF Node (Check Type)\n\n* This node determines whether the request is for opening the email modal or a response from the modal.\n* If it is a modal response, the workflow continues with the send email process.\n* Otherwise, the workflow proceeds to open the email modal.",
+        "height": 384,
+        "width": 352,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1120,
+        -48
+      ],
+      "typeVersion": 1,
+      "id": "83cc1e52-b613-4de8-8cd4-9c639d614a18",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n### 🔹 5. Https Node (Open Modal for Shortcut & Open Modal for Slash Command)\n\n* This node sends an HTTPS request to Slack using the Slack API, with a modal JSON object in the request body, which triggers the modal to open.\n* This modal collects the following inputs required to send an email via Gmail:\n   - Receiver Email\n   - Email Subject\n   - Email Body\n\n* Slack modals (views.open) are not supported by the n8n Slack node at the moment.\nThis HTTP Request node directly calls Slack’s views.open API to open a modal for slash commands and message shortcuts.",
+        "height": 592,
+        "width": 512,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1584,
+        480
+      ],
+      "typeVersion": 1,
+      "id": "2767e623-9a91-405a-ba27-9c97c45062f1",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "content": "### 🔹 7. Gmail (Send an Email)\n\n* This node sends the email after the modal is submitted.\n* The email is sent via Gmail to the address provided in the Modal Email field.",
+        "height": 352,
+        "width": 288,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        2192,
+        -80
+      ],
+      "typeVersion": 1,
+      "id": "c216e39b-976a-4d42-a2c6-13c6efa0f2fa",
+      "name": "Sticky Note6"
+    },
+    {
+      "parameters": {
+        "content": "### 🔹 8. Slack Node\n\n* After the email is sent, a confirmation message is posted in Slack.\n* If the email address is invalid, a failure message is posted in Slack instead.",
+        "height": 560,
+        "width": 304
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        2688,
+        96
+      ],
+      "typeVersion": 1,
+      "id": "00ac298d-57f6-4684-9a34-500548cc5e8e",
+      "name": "Sticky Note7"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://slack.com/api/views.open",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $json.Auth_key }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"trigger_id\": \"{{ $('Capture Slack Events').item.json.body.trigger_id }}\",\n  \"view\": {\n    \"type\": \"modal\",\n    \"callback_id\": \"send_email_modal\",\n    \"private_metadata\": \"{{ $('Capture Slack Events').item.json.body.channel_id }}\",\n    \"title\": {\n      \"type\": \"plain_text\",\n      \"text\": \"Send Email\"\n    },\n    \"submit\": {\n      \"type\": \"plain_text\",\n      \"text\": \"Send\"\n    },\n    \"close\": {\n      \"type\": \"plain_text\",\n      \"text\": \"Cancel\"\n    },\n    \"blocks\": [\n      {\n        \"type\": \"input\",\n        \"block_id\": \"email\",\n        \"label\": {\n          \"type\": \"plain_text\",\n          \"text\": \"Recipient Email\"\n        },\n        \"element\": {\n          \"type\": \"plain_text_input\",\n          \"action_id\": \"to\"\n        }\n      },\n      {\n        \"type\": \"input\",\n        \"block_id\": \"subject\",\n        \"label\": {\n          \"type\": \"plain_text\",\n          \"text\": \"Subject\"\n        },\n        \"element\": {\n          \"type\": \"plain_text_input\",\n          \"action_id\": \"subject\",\n          \"initial_value\": \"Slack message\"\n        }\n      },\n      {\n        \"type\": \"input\",\n        \"block_id\": \"body\",\n        \"label\": {\n          \"type\": \"plain_text\",\n          \"text\": \"Email Body\"\n        },\n        \"element\": {\n          \"type\": \"plain_text_input\",\n          \"multiline\": true,\n          \"action_id\": \"body\",\n          \"initial_value\": \"{{ $('Capture Slack Events').item.json.body.text }}\"\n        }\n      }\n    ]\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        736,
+        -224
+      ],
+      "id": "19f80259-d2fc-4920-b69d-0c4a7db33708",
+      "name": "Open Modal for Slash Command"
+    },
+    {
+      "parameters": {
+        "respondWith": "noData",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        3248,
+        384
+      ],
+      "id": "cb8a99d6-5db0-4765-94e7-f80214a0ee2e",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "646b19a4-7d03-4dfd-a275-911df22415f9",
+              "leftValue": "={{ $json.view.state.values.email.to.value }}",
+              "rightValue": "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$",
+              "operator": {
+                "type": "string",
+                "operation": "regex"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1792,
+        304
+      ],
+      "id": "85b18bf1-ef0c-4caa-acc7-171f9cafa36d",
+      "name": "Check Email Validation"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "/send-email",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -752,
+        144
+      ],
+      "id": "3a690cd8-d305-4ba9-be1b-28cb68e39b73",
+      "name": "Capture Slack Events",
+      "webhookId": "74984fc1-50da-4d3a-aa11-7b7d0392a10d"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "36ce6bf8-57d5-4809-86e8-6bb3c0a43421",
+              "name": "Auth_key",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -224,
+        144
+      ],
+      "id": "da2df4d4-ee8e-48b7-82a8-21286864a3b8",
+      "name": "Adding a Auth Key for HTTPS request"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://slack.com/api/views.open",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $('Adding a Auth Key for HTTPS request').item.json.Auth_key }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"trigger_id\": \"{{ $json.trigger_id }}\",\n  \"view\": {\n    \"type\": \"modal\",\n    \"callback_id\": \"send_email_modal\",\n    \"private_metadata\": \"{{ $json.channel.id }}\",\n    \"title\": {\n      \"type\": \"plain_text\",\n      \"text\": \"Send Email\"\n    },\n    \"submit\": {\n      \"type\": \"plain_text\",\n      \"text\": \"Send\"\n    },\n    \"close\": {\n      \"type\": \"plain_text\",\n      \"text\": \"Cancel\"\n    },\n    \"blocks\": [\n      {\n        \"type\": \"input\",\n        \"block_id\": \"email\",\n        \"label\": {\n          \"type\": \"plain_text\",\n          \"text\": \"Recipient Email\"\n        },\n        \"element\": {\n          \"type\": \"plain_text_input\",\n          \"action_id\": \"to\"\n        }\n      },\n      {\n        \"type\": \"input\",\n        \"block_id\": \"subject\",\n        \"label\": {\n          \"type\": \"plain_text\",\n          \"text\": \"Subject\"\n        },\n        \"element\": {\n          \"type\": \"plain_text_input\",\n          \"action_id\": \"subject\",\n          \"initial_value\": \"Slack message\"\n        }\n      },\n      {\n        \"type\": \"input\",\n        \"block_id\": \"body\",\n        \"label\": {\n          \"type\": \"plain_text\",\n          \"text\": \"Email Body\"\n        },\n        \"element\": {\n          \"type\": \"plain_text_input\",\n          \"multiline\": true,\n          \"action_id\": \"body\",\n          \"initial_value\": \"{{ $json.message.text }}\"\n        }\n      }\n    ]\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1792,
+        512
+      ],
+      "id": "6ef095eb-63be-4cd1-835d-d87d32cad3b1",
+      "name": "Open Modal for Shortcut"
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "={{ $('Check Type').item.json.view.private_metadata }}",
+          "mode": "id"
+        },
+        "text": "✅ Email sent successfully!",
+        "otherOptions": {
+          "includeLinkToWorkflow": false
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.4,
+      "position": [
+        2800,
+        304
+      ],
+      "id": "ba7cb7fa-bee7-4bd9-9e47-1671eb55617f",
+      "name": "Send Success Response",
+      "webhookId": "536aaf97-4b33-4af0-ae9f-d5f9cac1640b",
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "={{ $('Check Type').item.json.view.private_metadata }}",
+          "mode": "id"
+        },
+        "text": "❌ Email failed to send.\\n\\nPlease check the recipient email address and try again.",
+        "otherOptions": {
+          "includeLinkToWorkflow": false
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.4,
+      "position": [
+        2800,
+        496
+      ],
+      "id": "ae5216ba-47bc-44f3-9e7a-78a6595cefbc",
+      "name": "Send Failure Response",
+      "webhookId": "536aaf97-4b33-4af0-ae9f-d5f9cac1640b",
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "content": "## Main Note — Slack to Gmail Email Sender Workflow\n\n### How it works\n* This workflow enables users to send emails directly from Slack using a slash command or shortcut, without switching tools. It starts when a user triggers /send-email or a Slack message shortcut. Slack sends the interaction payload to the n8n webhook.\n* The workflow first detects the interaction type. If the request is a slash command or shortcut, n8n opens a Slack modal using the views.open API. The modal contains fields for recipient email, subject, and email body, allowing users to compose a formatted email inside Slack.\n* When the modal is submitted, Slack sends a view_submission payload back to the same webhook. The workflow validates the input, especially the recipient email format, to prevent invalid sends. If validation fails, Slack displays an inline error inside the modal.\n* If validation succeeds, the workflow uses the Gmail node to send the email exactly as entered by the user. Once the email is sent, the workflow posts a confirmation message in Slack, indicating success or failure. A proper webhook response is returned so Slack closes the modal cleanly without errors.\n* This approach keeps the entire email flow inside Slack while ensuring reliability, validation, and clear user feedback.\n\n### Setup steps\n1. Create a Slack App with Slash Commands and Interactivity & Shortcuts enabled.\n2. Set the Slack Request URL to the n8n Webhook URL.\n3. Install the Slack App in your workspace and add it to the required channels.\n4. Store the Bot User OAuth Token in n8n for modal and message actions.\n5. Connect a Gmail account using OAuth2 in the Gmail node.\n6. Deploy the workflow and test using /send-email in Slack.",
+        "height": 480,
+        "width": 1088
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1328,
+        -624
+      ],
+      "typeVersion": 1,
+      "id": "eef999d1-daf4-45ac-bf3b-ce6398092cd2",
+      "name": "Sticky Note5"
+    }
+  ],
+  "connections": {
+    "Check command": {
+      "main": [
+        [
+          {
+            "node": "Open Modal for Slash Command",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Parse Payload Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Payload Data": {
+      "main": [
+        [
+          {
+            "node": "Check Type",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Type": {
+      "main": [
+        [
+          {
+            "node": "Check Email Validation",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Open Modal for Shortcut",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send an Email": {
+      "main": [
+        [
+          {
+            "node": "Send Success Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Email Validation": {
+      "main": [
+        [
+          {
+            "node": "Send an Email",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send Failure Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Capture Slack Events": {
+      "main": [
+        [
+          {
+            "node": "Adding a Auth Key for HTTPS request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Adding a Auth Key for HTTPS request": {
+      "main": [
+        [
+          {
+            "node": "Check command",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Success Response": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Failure Response": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "4e2b62d9-1842-47b7-a672-f28778e41f39",
+  "activeVersionId": null,
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2026-01-06T11:16:46.636Z",
+      "createdAt": "2026-01-06T11:16:46.636Z",
+      "role": "workflow:owner",
+      "workflowId": "bfdbwOdBnyJj24f6",
+      "projectId": "Bp7b9VxwF2dQ527l"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
